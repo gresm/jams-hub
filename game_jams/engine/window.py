@@ -45,14 +45,19 @@ class GameState:
 
 size = (800, 800)
 max_fps = 60
+game = None
 
 
 def get_game(game_size: tuple[int, int] | None = None, fps: int | None = None):
-    return GameState(fps or max_fps, game_size or size)
+    global game
+    ret = GameState(fps or max_fps, game_size or size)
+    game = ret
+    return ret
 
 
 __all__ = [
     "size",
     "max_fps",
-    "get_game"
+    "get_game",
+    "game"
 ]
