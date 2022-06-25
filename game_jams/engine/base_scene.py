@@ -4,6 +4,8 @@ from typing import Type
 
 import pygame as pg
 
+from .window import GameState
+
 
 class Scene:
     _instances_cnt: int = -1
@@ -14,7 +16,7 @@ class Scene:
 
     class_id: int = -1
 
-    scene_manager: SceneManager | None
+    manager: SceneManager | None
 
     def __init__(self, scene_manager: SceneManager | None = None):
         self.manager = scene_manager
@@ -55,6 +57,8 @@ class Scene:
 
 
 class SceneManager:
+    game: GameState
+
     def __init__(self):
         self.current: Scene | None = None
 
@@ -84,6 +88,8 @@ class SceneManager:
     def handle_events(self, event: pg.event.Event):
         self.current.add_event_to_pool(event)
 
-    def init(self, *args, **kwargs):
+    def init(self, game: GameState, *args, **kwargs):
+        self.game = game
+
         if self.current:
             self.current.init(*args, **kwargs)

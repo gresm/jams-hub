@@ -4,8 +4,9 @@ from .scenes import MainMenu
 
 import pygame as pg
 
-scene_manager.spawn_scene(MainMenu)
 game = get_game()
+scene_manager.init(game)
+scene_manager.spawn_scene(MainMenu)
 
 
 @game.frame
