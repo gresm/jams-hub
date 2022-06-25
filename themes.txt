@@ -1,4 +1,5 @@
 bullet hell
+mirrors
 recursive
 upside down
 a-maze
