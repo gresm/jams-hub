@@ -10,11 +10,18 @@ pg.init()
 
 
 class GameState:
-    def __init__(self, fps: int):
+    screen: pg.Surface
+
+    def __init__(self, fps: int, screen_size: tuple[int, int]):
         self.max_fps = fps
         self.clock = pg.time.Clock()
-        self.running = True
+        self.running = False
         self._frame: Callable[[pg.Surface, float], ...] | None = None
+        self.size = screen_size
+
+    def init(self):
+        self.screen = pg.display.set_mode(self.size)
+        self.running = True
 
     def stop(self):
         self.running = False
@@ -30,7 +37,7 @@ class GameState:
                     ms = self.clock.tick(max_fps)
                 else:
                     ms = self.clock.tick()
-                self._frame(screen, ms / self.max_fps)  # probably you are missing "window" and "delta_time" arguments
+                self._frame(self.screen, ms / self.max_fps)  # maybe you are missing "window" and "delta_time" arguments
             else:
                 warn("Running without specified frame executor")
                 break
@@ -38,12 +45,14 @@ class GameState:
 
 size = (800, 800)
 max_fps = 60
-screen = pg.display.set_mode(size)
-game = GameState(max_fps)
+
+
+def get_game(game_size: tuple[int, int] | None = None, fps: int | None = None):
+    return GameState(fps or max_fps, game_size or size)
+
 
 __all__ = [
     "size",
     "max_fps",
-    "screen",
-    "game"
+    "get_game"
 ]

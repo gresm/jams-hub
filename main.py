@@ -15,4 +15,4 @@ if not 1 <= jam_id <= len(game_jams.game_jams):
     print("Available jam ids: 1-" + str(len(game_jams.game_jams)))
     exit()
 
-game_jams.game_jams[jam_id]()
+game_jams.game_jams[jam_id - 1]()
