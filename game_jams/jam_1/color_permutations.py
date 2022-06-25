@@ -43,11 +43,11 @@ def simple_color_iter(r: int, g: int, b: int, c: bool) -> tuple[int, int, int, b
     return r, g, b, c
 
 
-def color_iter() -> Callable[[], tuple[int, int, int]]:
+def color_iter(r: int = -1, g: int = -1, b: int = -1) -> Callable[[], tuple[int, int, int]]:
     c = True
-    r = randint(0, 255)
-    g = randint(0, 255)
-    b = randint(0, 255)
+    r = randint(0, 255) if r == -1 else r
+    g = randint(0, 255) if g == -1 else g
+    b = randint(0, 255) if b == -1 else b
     seq = [0, 1, 2]
     shuffle(seq)
 
