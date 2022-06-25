@@ -39,4 +39,19 @@ class MainMenu(BaseScene):
 
 
 class GameScene(BaseScene):
-    pass
+    frame_counter: int
+    seconds_counter: int
+
+    def init(self):
+        pg.display.set_caption("Top and Bottom - Game")
+        self.frame_counter = 0
+        self.seconds_counter = 0
+
+    def update(self):
+        self.frame_counter += 1
+        if self.frame_counter == 60:
+            self.frame_counter = 0
+            self.seconds_counter += 1
+
+    def draw(self, surface: pg.Surface):
+        pass
