@@ -58,6 +58,9 @@ class Scene:
     def on_redirect(self, scene: Scene):
         pass
 
+    def on_redirect_from(self, scene: Scene):
+        pass
+
 
 class SceneManager:
     game: GameState
@@ -77,11 +80,16 @@ class SceneManager:
         if isinstance(scene_id, Scene):
             if self.current:
                 self.current.on_redirect(scene_id)
+            old = self.current
             self.current = scene_id
+            self.current.on_redirect_from(old)
         elif scene_id in Scene.instances:
+            old = self.current
+            new = Scene.instances[scene_id]
+            new.on_redirect_from(old)
             if self.current:
-                self.current.on_redirect(Scene.instances[scene_id])
-            self.current = Scene.instances[scene_id]
+                self.current.on_redirect(new)
+            self.current = new
 
     def spawn_scene(self, scene_id: int | Type[Scene]):
         if isinstance(scene_id, type) and issubclass(scene_id, Scene):
@@ -91,6 +99,18 @@ class SceneManager:
             self.set_active_scene(Scene.current_instance_id())
             return Scene.current_instance_id()
         return -1
+
+    def spawn_remove_scene(self, scene_id: int | Type[Scene]):
+        self.remove_scene(Scene.current_instance_id())
+        self.spawn_scene(scene_id)
+
+    def remove_scene(self, scene_id: int | Scene):
+        if isinstance(scene_id, Scene):
+            scene_id = scene_id.instance_id
+        if scene_id in Scene.instances:
+            del Scene.instances[scene_id]
+            if self.current and scene_id == self.current.instance_id:
+                self.current = None
 
     def handle_events(self, event: pg.event.Event):
         self.current.add_event_to_pool(event)

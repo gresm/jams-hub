@@ -42,6 +42,7 @@ class GameScene(BaseScene):
     frame_counter: int
     seconds_counter: int
 
+
     def init(self):
         pg.display.set_caption("Top and Bottom - Game")
         self.frame_counter = 0
