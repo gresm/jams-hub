@@ -59,5 +59,6 @@ __all__ = [
     "size",
     "max_fps",
     "get_game",
-    "game"
+    "game",
+    "GameState"
 ]

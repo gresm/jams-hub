@@ -55,6 +55,9 @@ class Scene:
     def update(self):
         pass
 
+    def on_redirect(self, scene: Scene):
+        pass
+
 
 class SceneManager:
     game: GameState
@@ -72,8 +75,12 @@ class SceneManager:
 
     def set_active_scene(self, scene_id: int | Scene):
         if isinstance(scene_id, Scene):
+            if self.current:
+                self.current.on_redirect(scene_id)
             self.current = scene_id
         elif scene_id in Scene.instances:
+            if self.current:
+                self.current.on_redirect(Scene.instances[scene_id])
             self.current = Scene.instances[scene_id]
 
     def spawn_scene(self, scene_id: int | Type[Scene]):
