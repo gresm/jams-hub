@@ -3,13 +3,15 @@ from __future__ import annotations
 from ..engine import BaseScene
 from . import assets, color_permutations
 
+from typing import Callable
+
 import pygame as pg
 
 
 class MainMenu(BaseScene):
     frame_counter: int
     seconds_counter: int
-    color_iter: callable[[], tuple[int, int, int]]
+    color_iter: Callable[[], tuple[int, int, int]]
 
     def init(self):
         pg.display.set_caption("Top and Bottom - Main Menu")

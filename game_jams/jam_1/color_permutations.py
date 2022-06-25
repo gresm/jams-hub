@@ -1,5 +1,7 @@
 from __future__ import annotations
-import random as rd
+
+from typing import Callable
+from random import randint, shuffle
 
 
 def simple_color_iter(r: int, g: int, b: int, c: bool) -> tuple[int, int, int, bool]:
@@ -41,13 +43,13 @@ def simple_color_iter(r: int, g: int, b: int, c: bool) -> tuple[int, int, int, b
     return r, g, b, c
 
 
-def color_iter() -> callable[[], tuple[int, int, int]]:
+def color_iter() -> Callable[[], tuple[int, int, int]]:
     c = True
-    r = rd.randint(0, 255)
-    g = rd.randint(0, 255)
-    b = rd.randint(0, 255)
+    r = randint(0, 255)
+    g = randint(0, 255)
+    b = randint(0, 255)
     seq = [0, 1, 2]
-    rd.shuffle(seq)
+    shuffle(seq)
 
     def internal_color_iter():
         nonlocal c, r, g, b
@@ -56,6 +58,6 @@ def color_iter() -> callable[[], tuple[int, int, int]]:
         ret[seq[0]] = r
         ret[seq[1]] = g
         ret[seq[2]] = b
-        return tuple(ret)
+        return ret[0], ret[1], ret[2]
 
     return internal_color_iter
