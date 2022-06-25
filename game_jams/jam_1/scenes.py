@@ -41,21 +41,30 @@ class MainMenu(BaseScene):
 class GameScene(BaseScene):
     frame_counter: int
     seconds_counter: int
-
+    upper_scene: BaseScene | None
 
     def init(self):
         pg.display.set_caption("Top and Bottom - Game")
         self.frame_counter = 0
         self.seconds_counter = 0
+        self.upper_scene = None
 
     def update(self):
+        for event in self.get_events():
+            if event.type == pg.KEYDOWN:
+                if event.key == pg.K_ESCAPE:
+                    if self.upper_scene:
+                        self.manager.set_active_scene(self.upper_scene)
+                    else:
+                        self.manager.game.stop()
+
         self.frame_counter += 1
         if self.frame_counter == 60:
             self.frame_counter = 0
             self.seconds_counter += 1
 
     def draw(self, surface: pg.Surface):
-        for event in self.get_events():
-            if event.type == pg.KEYDOWN:
-                if event.key == pg.K_ESCAPE:
-                    self.manager.game.stop()
+        pass
+
+    def on_redirect_from(self, scene: BaseScene):
+        self.upper_scene = scene
