@@ -54,4 +54,7 @@ class GameScene(BaseScene):
             self.seconds_counter += 1
 
     def draw(self, surface: pg.Surface):
-        pass
+        for event in self.get_events():
+            if event.type == pg.KEYDOWN:
+                if event.key == pg.K_ESCAPE:
+                    self.manager.game.stop()
