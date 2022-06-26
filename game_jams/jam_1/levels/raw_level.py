@@ -4,6 +4,7 @@ Loader for raw level data.
 from __future__ import annotations
 
 import re
+from functools import lru_cache, cache
 from pathlib import Path
 from enum import Enum
 
@@ -40,12 +41,13 @@ class RawLevel:
 level_file_name_format = r"level_\d_\d\.csv"
 
 
+@lru_cache(maxsize=1)
 def list_levels():
     """
-    Returns a list of all levels in the "levels" directory.
+    Returns a list of all game_levels in the "game_levels" directory.
     It does not load them from files, just lists them
     """
-    levels_dir = Path(__file__).parent / "levels"
+    levels_dir = Path(__file__).parent / "game_levels"
     ret: dict[int, dict[int, Path]] = {}
     for file in levels_dir.iterdir():
         # check if file is a level file using regex
@@ -61,9 +63,6 @@ def list_levels():
     return ret
 
 
-levels = list_levels()
-
-
 def parse_text(text: str) -> list[list[str]]:
     """
     Parses a text file into a list of lists of strings.
@@ -75,11 +74,12 @@ def parse_text(text: str) -> list[list[str]]:
     return ret
 
 
+@cache
 def load_level(level_world: int, level_num: int) -> RawLevel:
     """
     Loads a level from a file.
     """
-    file = levels[level_world][level_num]
+    file = list_levels()[level_world][level_num]
     with file.open() as f:
         extra_info = parse_text(f.readline())[0]
         text = f.read()
@@ -87,3 +87,6 @@ def load_level(level_world: int, level_num: int) -> RawLevel:
         upper = parse_text(boards[0])
         lower = parse_text(boards[1])
     return RawLevel.parse_raw(extra_info, upper, lower)
+
+
+__all__ = ["RawLevel", "Tile", "LevelInfo", "load_level", "list_levels"]
