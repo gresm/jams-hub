@@ -45,17 +45,13 @@ class GameScene(BaseScene):
     seconds_counter: int
     upper_scene: BaseScene | None
     background_color_iter: Callable[[], tuple[int, int, int]]
-    walls_color_iter: Callable[[], tuple[int, int, int]]
-    player_color_iter: Callable[[], tuple[int, int, int]]
 
     def init(self):
         pg.display.set_caption("Top and Bottom - Game")
         self.frame_counter = 0
         self.seconds_counter = 0
         self.upper_scene = None
-        self.background_color_iter = color_permutations.color_iter(245, 245, 245)
-        self.walls_color_iter = color_permutations.color_iter(10, 10, 10)
-        self.player_color_iter = color_permutations.color_iter(0, 0, 255)
+        self.background_color_iter = color_permutations.color_iter()
 
     def update(self):
         for event in self.get_events():
@@ -70,14 +66,11 @@ class GameScene(BaseScene):
         if self.frame_counter == 60:
             self.frame_counter = 0
             self.seconds_counter += 1
+            if self.seconds_counter % 5 == 0:
+                self.background_color_iter = color_permutations.color_iter()
 
     def draw(self, surface: pg.Surface):
         surface.fill(self.background_color_iter())
-        walls_color = self.walls_color_iter()
-        player_color = self.player_color_iter()
-        pg.draw.rect(surface, walls_color, (0, 0, 100, surface.get_height()))
-        pg.draw.rect(surface, walls_color, (surface.get_width() - 100, 0, 100, surface.get_height()))
-        pg.draw.rect(surface, player_color, (100, 0, 100, 50))
 
     def on_redirect_from(self, scene: BaseScene):
         self.upper_scene = scene
