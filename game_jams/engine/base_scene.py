@@ -95,22 +95,23 @@ class SceneManager:
             self.current.update()
             self.current.frame_counter.tick()
 
-    def set_active_scene(self, scene_id: int | Scene):
+    def set_active_scene(self, scene_id: int | Scene, silent: bool = False):
         if isinstance(scene_id, Scene):
             if self.current:
                 self.current.on_redirect(scene_id)
             old = self.current
             self.current = scene_id
-            self.current.on_redirect_from(old)
+            if not silent:
+                self.current.on_redirect_from(old)
         elif scene_id in Scene.instances:
             old = self.current
             new = Scene.instances[scene_id]
-            new.on_redirect_from(old)
-            if self.current:
-                self.current.on_redirect(new)
+            self.current.on_redirect(new)
+            if self.current and not silent:
+                new.on_redirect_from(old)
             self.current = new
 
-    def spawn_scene(self, scene_id: int | Type[Scene]):
+    def spawn_scene(self, scene_id: int | Type[Scene], silent: bool = False):
         if isinstance(scene_id, type) and issubclass(scene_id, Scene):
             return self.spawn_scene(scene_id.class_id)
         elif scene_id in Scene.scenes:
