@@ -52,6 +52,9 @@ class Scene:
     def add_event_to_pool(self, event: pg.event.Event):
         self._events.append(event)
 
+    def on_event(self, event: pg.event.Event):
+        pass
+
     def get_events(self):
         for _ in range(len(self._events)):
             yield self._events.pop()
@@ -131,6 +134,7 @@ class SceneManager:
 
     def handle_events(self, event: pg.event.Event):
         self.current.add_event_to_pool(event)
+        self.current.on_event(event)
 
     def init(self, game: GameState, *args, **kwargs):
         self.game = game
