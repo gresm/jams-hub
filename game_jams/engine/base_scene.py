@@ -5,6 +5,11 @@ from typing import Type
 import pygame as pg
 
 from .window import GameState
+from .scene_tools import FrameCounter
+
+
+class SceneException(Exception):
+    pass
 
 
 class Scene:
@@ -17,13 +22,15 @@ class Scene:
     class_id: int = -1
 
     manager: SceneManager | None
+    frame_counter: FrameCounter
 
-    def __init__(self, scene_manager: SceneManager | None = None):
+    def __init__(self, scene_manager: SceneManager):
         self.manager = scene_manager
         Scene._instances_cnt += 1
         Scene.instances[self._instances_cnt] = self
         self.instance_id = self.current_instance_id()
         self._events: list[pg.event.Event] = []
+        self.frame_counter = FrameCounter(self.manager.game.max_fps)
         self.init()
 
     def __init_subclass__(cls, **kwargs):
@@ -64,17 +71,26 @@ class Scene:
 
 class SceneManager:
     game: GameState
+    global_counter: FrameCounter
 
     def __init__(self):
         self.current: Scene | None = None
+        self.initialised = False
+
+    def init_check(self):
+        if not self.initialised:
+            raise SceneException("SceneManager not initialised")
 
     def draw(self, surface: pg.Surface):
+        self.init_check()
         if self.current is not None:
             self.current.draw(surface)
 
     def update(self):
+        self.init_check()
         if self.current:
             self.current.update()
+            self.current.frame_counter.tick()
 
     def set_active_scene(self, scene_id: int | Scene):
         if isinstance(scene_id, Scene):
@@ -98,7 +114,8 @@ class SceneManager:
             Scene.scenes[scene_id](self)
             self.set_active_scene(Scene.current_instance_id())
             return Scene.current_instance_id()
-        return -1
+        else:
+            raise SceneException("Scene not found.")
 
     def spawn_remove_scene(self, scene_id: int | Type[Scene]):
         self.remove_scene(Scene.current_instance_id())
@@ -117,6 +134,8 @@ class SceneManager:
 
     def init(self, game: GameState, *args, **kwargs):
         self.game = game
+        self.global_counter = FrameCounter(self.game.max_fps)
+        self.initialised = True
 
         if self.current:
             self.current.init(*args, **kwargs)
