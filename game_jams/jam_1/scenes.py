@@ -67,10 +67,13 @@ class LevelSelectionScene(SceneWithBackground):
 
     def init(self):
         self.page_name = "Level Selection"
+        super().init()
+        self.reset_selection()
+
+    def reset_selection(self):
         self.selected_world = 1
         self.selected_level = 1
         self.selecting_level = False
-        super().init()
 
     def update(self):
         super().update()
