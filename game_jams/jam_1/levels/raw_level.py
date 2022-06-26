@@ -43,7 +43,7 @@ level_file_name_format = r"level_\d_\d\.csv"
 
 
 @lru_cache(maxsize=1)
-def list_levels():
+def list_raw_levels():
     """
     Returns a list of all game_levels in the "game_levels" directory.
     It does not load them from files, just lists them
@@ -80,14 +80,29 @@ def load_level(level_world: int, level_num: int) -> RawLevel:
     """
     Loads a level from a file.
     """
-    file = list_levels()[level_world][level_num]
+    file = list_raw_levels()[level_world][level_num]
     with file.open() as f:
         extra_info = parse_text(f.readline())[0]
         text = f.read()
-        boards = text.split("\n!\n")[0]
+        boards = text.split("\n!\n")
         upper = parse_text(boards[0])
         lower = parse_text(boards[1])
     return RawLevel.parse_raw(extra_info, upper, lower)
+
+
+@lru_cache(maxsize=1)
+def list_levels() -> dict[int, dict[int, RawLevel]]:
+    """
+    Loads all levels from files and returns them as a dictionary.
+    :return:
+    """
+    lst = list_raw_levels()
+    ret = {}
+    for world in lst:
+        ret[world] = {}
+        for level in lst[world]:
+            ret[world][level] = load_level(world, level)
+    return ret
 
 
 __all__ = ["RawLevel", "Tile", "LevelInfo", "load_level", "list_levels"]

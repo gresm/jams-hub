@@ -63,11 +63,13 @@ class MainMenu(SceneWithBackground):
 class LevelSelectionScene(SceneWithBackground):
     selected_world: int
     selected_level: int
+    selecting_level: bool
 
     def init(self):
         self.page_name = "Level Selection"
-        self.selected_world = 0
-        self.selected_level = 0
+        self.selected_world = 1
+        self.selected_level = 1
+        self.selecting_level = True
         super().init()
 
     def update(self):
@@ -75,6 +77,33 @@ class LevelSelectionScene(SceneWithBackground):
         for event in self.get_events():
             if event.type == pg.KEYDOWN:
                 pass
+
+    def draw(self, surface: pg.Surface):
+        surface.fill(self.color_iter())
+        surface.blit(assets.font_title.render("Level Selection", True, (255, 255, 255)), (10, 10))
+
+        for num, level in listed_levels.items():
+            if num == self.selected_world:
+                lv_rect = pg.draw.rect(surface, (255, 255, 255), (10 + (num - 1) * 45, 50, 40, 40), 5)
+            else:
+                lv_rect = pg.draw.rect(surface, (255, 255, 255), (10 + (num - 1) * 45, 50, 40, 40), 3)
+            text = assets.font_text.render(str(num), True, (255, 255, 255))
+            text_rect = text.get_rect()
+            text_rect.center = lv_rect.center
+            surface.blit(text, text_rect)
+
+        if self.selecting_level:
+            world = listed_levels[self.selected_world]
+
+            for num, level in world.items():
+                if num == self.selected_level:
+                    lv_rect = pg.draw.rect(surface, (255, 255, 255), (40 + (num - 1) * 45, 100, 40, 40), 5)
+                else:
+                    lv_rect = pg.draw.rect(surface, (255, 255, 255), (40 + (num - 1) * 45, 100, 40, 40), 3)
+                text = assets.font_text.render(str(num), True, (255, 255, 255))
+                text_rect = text.get_rect()
+                text_rect.center = lv_rect.center
+                surface.blit(text, text_rect)
 
 
 class GameScene(SceneWithBackground):
