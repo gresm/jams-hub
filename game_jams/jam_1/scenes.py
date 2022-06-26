@@ -19,7 +19,7 @@ class MainMenu(BaseScene):
         for event in self.get_events():
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_RETURN:
-                    self.manager.spawn_scene(GameScene)
+                    self.manager.spawn_scene(LevelSelectionScene)
                 elif event.key == pg.K_ESCAPE:
                     self.manager.game.stop()
 
