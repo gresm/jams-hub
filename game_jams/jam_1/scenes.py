@@ -69,14 +69,35 @@ class LevelSelectionScene(SceneWithBackground):
         self.page_name = "Level Selection"
         self.selected_world = 1
         self.selected_level = 1
-        self.selecting_level = True
+        self.selecting_level = False
         super().init()
 
     def update(self):
         super().update()
         for event in self.get_events():
             if event.type == pg.KEYDOWN:
-                pass
+                if event.key in {pg.K_w, pg.K_UP}:
+                    self.selecting_level = False
+                if event.key in {pg.K_s, pg.K_DOWN}:
+                    self.selecting_level = True
+                if event.key in {pg.K_a, pg.K_LEFT}:
+                    if self.selecting_level:
+                        self.selected_level -= 1
+                        if self.selected_level not in listed_levels[self.selected_world]:
+                            self.selected_level = max(listed_levels[self.selected_world])
+                    else:
+                        self.selected_world -= 1
+                        if self.selected_world not in listed_levels:
+                            self.selected_world = max(listed_levels)
+                if event.key in {pg.K_d, pg.K_RIGHT}:
+                    if self.selecting_level:
+                        self.selected_level += 1
+                        if self.selected_level not in listed_levels[self.selected_world]:
+                            self.selected_level = min(listed_levels[self.selected_world])
+                    else:
+                        self.selected_world += 1
+                        if self.selected_world not in listed_levels:
+                            self.selected_world = min(listed_levels)
 
     def draw(self, surface: pg.Surface):
         surface.fill(self.color_iter())
