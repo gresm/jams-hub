@@ -23,7 +23,7 @@ class BaseGameScene(BaseScene):
         if event.type == pg.KEYDOWN:
             if event.key == pg.K_ESCAPE:
                 if self.upper_scene:
-                    self.manager.set_active_scene(self.upper_scene)
+                    self.manager.set_active_scene(self.upper_scene, silent=True)
                 else:
                     self.manager.game.stop()
 

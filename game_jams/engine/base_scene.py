@@ -106,9 +106,10 @@ class SceneManager:
         elif scene_id in Scene.instances:
             old = self.current
             new = Scene.instances[scene_id]
-            self.current.on_redirect(new)
-            if self.current and not silent:
+            if not silent:
                 new.on_redirect_from(old)
+            if self.current:
+                self.current.on_redirect(new)
             self.current = new
 
     def spawn_scene(self, scene_id: int | Type[Scene], silent: bool = False):
@@ -116,7 +117,7 @@ class SceneManager:
             return self.spawn_scene(scene_id.class_id)
         elif scene_id in Scene.scenes:
             Scene.scenes[scene_id](self)
-            self.set_active_scene(Scene.current_instance_id())
+            self.set_active_scene(Scene.current_instance_id(), silent)
             return Scene.current_instance_id()
         else:
             raise SceneException("Scene not found.")
