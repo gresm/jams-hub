@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from ..engine import BaseScene
+from .levels import listed_levels
 from . import assets, color_permutations
 
 from typing import Callable

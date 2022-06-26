@@ -10,18 +10,19 @@ from enum import Enum
 
 
 class Tile(Enum):
-    ground = 0
+    air = 0
     wall = 1
     player = 2
     goal = 3
     movable = 4
-    moving_platform = 5
 
 
 class LevelInfo:
-    def __init__(self, title: str, theme: str):
+    def __init__(self, title: str, theme: str, width: int, height: int):
         self.title = title
         self.theme = theme
+        self.width = width
+        self.height = height
 
 
 class RawLevel:
@@ -32,7 +33,7 @@ class RawLevel:
 
     @classmethod
     def parse_raw(cls, info: list[str], upper: list[list[str]], lower: list[list[str]]) -> RawLevel:
-        level_info = LevelInfo(info[0], info[1])
+        level_info = LevelInfo(info[0], info[1], int(info[2]), int(info[3]))
         upper_board = [[Tile(int(tile)) for tile in row] for row in upper]
         lower_board = [[Tile(int(tile)) for tile in row] for row in lower]
         return cls(level_info, upper_board, lower_board)
