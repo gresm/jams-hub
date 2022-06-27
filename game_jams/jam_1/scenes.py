@@ -126,6 +126,9 @@ class LevelSelectionScene(SceneWithBackground):
             for num, level in world.items():
                 if num == self.selected_level:
                     lv_rect = pg.draw.rect(surface, (255, 255, 255), (40 + (num - 1) * 45, 100, 40, 40), 5)
+                    # draw level name
+                    text = assets.font_text.render(level.level_info.title, True, (255, 255, 255))
+                    surface.blit(text, (40, 150))
                 else:
                     lv_rect = pg.draw.rect(surface, (255, 255, 255), (40 + (num - 1) * 45, 100, 40, 40), 3)
                 text = assets.font_text.render(str(num), True, (255, 255, 255))
