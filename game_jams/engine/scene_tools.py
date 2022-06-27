@@ -5,8 +5,6 @@ class FrameCounter:
         self.millisecond: int = 0
         self.seconds: int = 0
         self.minutes: int = 0
-        self.milliseconds_per_frame = 1000 / fps
-        self.seconds_per_frame = 60 / fps
         self.new_second = False
         self.new_minute = False
 
@@ -14,7 +12,7 @@ class FrameCounter:
         self.new_second = False
         self.new_minute = False
         self.frame += 1
-        self.millisecond += self.milliseconds_per_frame
+        self.millisecond += int(delta_time * 1000)
         if self.millisecond >= 1000:
             self.millisecond -= 1000
             self.seconds += 1
