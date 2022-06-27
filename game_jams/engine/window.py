@@ -37,7 +37,7 @@ class GameState:
                     ms = self.clock.tick(max_fps)
                 else:
                     ms = self.clock.tick()
-                self._frame(self.screen, ms / self.max_fps)  # maybe you are missing "window" and "delta_time" arguments
+                self._frame(self.screen, ms / 1000.0)  # maybe you are missing "window" and "delta_time" arguments
             else:
                 warn("Running without specified frame executor")
                 break

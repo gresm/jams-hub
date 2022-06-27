@@ -10,7 +10,7 @@ class FrameCounter:
         self.new_second = False
         self.new_minute = False
 
-    def tick(self):
+    def tick(self, delta_time: float):
         self.new_second = False
         self.new_minute = False
         self.frame += 1

@@ -35,8 +35,8 @@ class SceneWithBackground(BaseGameScene):
         super().init()
         self.color_iter = color_permutations.color_iter()
 
-    def update(self):
-        super().update()
+    def update(self, delta_time: float):
+        super().update(delta_time)
         if self.frame_counter.seconds % 5 == 0 and self.frame_counter.new_second:
             self.color_iter = color_permutations.color_iter()
 
@@ -46,8 +46,8 @@ class MainMenu(SceneWithBackground):
         self.page_name = "Main Menu"
         super().init()
 
-    def update(self):
-        super().update()
+    def update(self, delta_time: float):
+        super().update(delta_time)
         for event in self.get_events():
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_RETURN:
@@ -75,8 +75,8 @@ class LevelSelectionScene(SceneWithBackground):
         self.selected_level = 1
         self.selecting_level = False
 
-    def update(self):
-        super().update()
+    def update(self, delta_time: float):
+        super().update(delta_time)
         for event in self.get_events():
             if event.type == pg.KEYDOWN:
                 if event.key in {pg.K_w, pg.K_UP}:
@@ -135,8 +135,8 @@ class GameScene(SceneWithBackground):
         self.page_name = "Game"
         super().init()
 
-    def update(self):
-        super().update()
+    def update(self, delta_time: float):
+        super().update(delta_time)
         for event in self.get_events():
             if event.type == pg.KEYDOWN:
                 pass

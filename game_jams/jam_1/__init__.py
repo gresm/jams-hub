@@ -17,7 +17,7 @@ def frame(window: pg.Surface, delta_time: float):
         else:
             scene_manager.handle_events(ev)
 
-    scene_manager.update()
+    scene_manager.update(delta_time)
 
     window.fill((0, 0, 0))
 

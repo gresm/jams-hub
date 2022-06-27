@@ -62,7 +62,7 @@ class Scene:
     def draw(self, surface: pg.Surface):
         pass
 
-    def update(self):
+    def update(self, delta_time: float):
         pass
 
     def on_redirect(self, scene: Scene):
@@ -89,11 +89,11 @@ class SceneManager:
         if self.current is not None:
             self.current.draw(surface)
 
-    def update(self):
+    def update(self, delta_time: float):
         self.init_check()
         if self.current:
-            self.current.update()
-            self.current.frame_counter.tick()
+            self.current.update(delta_time)
+            self.current.frame_counter.tick(delta_time)
 
     def set_active_scene(self, scene_id: int | Scene, silent: bool = False):
         if isinstance(scene_id, Scene):

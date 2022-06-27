@@ -6,4 +6,9 @@ import pymunk
 
 
 class PymunkLevel:
-    pass
+    def __init__(self, level: RawLevel):
+        self.raw_level = level
+        self.space = pymunk.Space()
+
+    def populate_space(self):
+        pass
