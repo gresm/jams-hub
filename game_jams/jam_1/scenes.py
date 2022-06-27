@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 from ..engine import BaseScene
-from .levels import listed_levels
+from .levels import listed_levels, PymunkLevel
+from .levels.raw_level import RawLevel
 from . import assets, color_permutations
 
 from typing import Callable
@@ -81,8 +82,11 @@ class LevelSelectionScene(SceneWithBackground):
             if event.type == pg.KEYDOWN:
                 if event.key in {pg.K_w, pg.K_UP}:
                     self.selecting_level = False
-                if event.key in {pg.K_s, pg.K_DOWN}:
-                    self.selecting_level = True
+                if event.key in {pg.K_s, pg.K_DOWN, pg.K_RETURN}:
+                    if not self.selecting_level:
+                        self.selecting_level = True
+                    else:
+                        self.manager.spawn_scene(GameScene)
                 if event.key in {pg.K_a, pg.K_LEFT}:
                     if self.selecting_level:
                         self.selected_level -= 1
@@ -131,9 +135,14 @@ class LevelSelectionScene(SceneWithBackground):
 
 
 class GameScene(SceneWithBackground):
+    raw_level: RawLevel
+    pymunk_level: PymunkLevel
+    surface: pg.Surface | None
+
     def init(self):
         self.page_name = "Game"
         super().init()
+        self.surface = None
 
     def update(self, delta_time: float):
         super().update(delta_time)
@@ -141,8 +150,21 @@ class GameScene(SceneWithBackground):
             if event.type == pg.KEYDOWN:
                 pass
 
+        self.pymunk_level.tick(delta_time)
+
     def draw(self, surface: pg.Surface):
         surface.fill(self.color_iter())
+        if surface is not self.surface:
+            self.surface = surface
+            self.pymunk_level.set_pygame_screen(surface)
+
+        self.pymunk_level.draw()
 
     def on_redirect_from(self, scene: BaseScene):
-        self.upper_scene = scene
+        super().on_redirect_from(scene)
+        if not isinstance(scene, LevelSelectionScene):
+            # Go back to that scene
+            self.manager.set_active_scene(scene, silent=True)
+            return
+        self.raw_level = listed_levels[scene.selected_world][scene.selected_level]
+        self.pymunk_level = PymunkLevel(self.raw_level)

@@ -3,7 +3,7 @@ Convert RawLevel to pymunk space for physics simulation.
 """
 from __future__ import annotations
 
-from raw_level import RawLevel, Tile
+from .raw_level import RawLevel, Tile
 from enum import Enum
 import pymunk
 import pymunk.pygame_util
@@ -93,18 +93,19 @@ class PymunkLevel:
         movable_shape.collision_type = CollisionMasks.movable.value
         movable_shape.filter = pymunk.ShapeFilter(CollisionMasks.player_collide_with.value,
                                                   CollisionMasks.movable_collide_with.value)
-        self.space.add(movable_shape)
+        self.space.add(movable_body, movable_shape)
 
     def add_player(self, row_index, col_index):
         """
         Add player to space.
         """
-        player_shape = pymunk.Circle(self.space.static_body, 16, (col_index * 32 + 16, row_index * 32 + 16))
+        player_body = pymunk.Body(100, 100)
+        player_shape = pymunk.Circle(player_body, 16, (col_index * 32 + 16, row_index * 32 + 16))
         player_shape.friction = 0.5
         player_shape.collision_type = CollisionMasks.players.value
         player_shape.filter = pymunk.ShapeFilter(CollisionMasks.player_collide_with.value,
                                                  CollisionMasks.movable_collide_with.value)
-        self.space.add(player_shape)
+        self.space.add(player_body, player_shape)
         self.players.add(player_shape)
 
     def add_level_boundaries(self):
@@ -164,3 +165,6 @@ class PymunkLevel:
         Draw space.
         """
         self.space.debug_draw(self.draw_options)
+
+
+__all__ = ['PymunkLevel']
