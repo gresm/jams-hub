@@ -33,7 +33,7 @@ class RawLevel:
 
     @classmethod
     def parse_raw(cls, info: list[str], upper: list[list[str]], lower: list[list[str]]) -> RawLevel:
-        level_info = LevelInfo(info[0], info[1], int(info[2]), int(info[3]))
+        level_info = LevelInfo(info[0], info[1], int(info[2]), int(info[3]) * 2)
         upper_board = [[Tile(int(tile)) for tile in row] for row in upper]
         lower_board = [[Tile(int(tile)) for tile in row] for row in lower]
         return cls(level_info, upper_board, lower_board)
